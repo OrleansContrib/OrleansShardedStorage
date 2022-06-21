@@ -12,7 +12,7 @@ It's only experimental. There could well be issues with it!
 WARNING: You cannot change the storage accounts or the number of storage accounts after initial setup! Doing so WILL lead to a loss of data.
 
 
-Assuming a secrets file that looks like this:
+In the Silo project you will need a secrets.json file that looks like this (add as many accounts/sas as you like!):
 
 ```
 {
@@ -24,7 +24,7 @@ Assuming a secrets file that looks like this:
 ```
 
 
-In the SILO, one would make a list of connections like so:
+In the SILO, make a list of connections like so:
 
 ```
 List<AzureTableStorageConnection> grainStores = new List<AzureTableStorageConnection>();
@@ -45,7 +45,7 @@ for (int i = 0; i < 1000; i++)
 ```
 
 
-Then add it to the silo like so:
+Then add it to the silo:
 
 ```
 siloBuilder
@@ -78,6 +78,10 @@ public class NumberStoreGrain : Orleans.Grain, INumberStoreGrain
 
 
 ```
+
+Options are available to override the Table name. The table will be created on startup.
+
+The sharding works by taking a hash of the grainreference and using a modulus of that to work out where to store information for that grain.
 
 
 
