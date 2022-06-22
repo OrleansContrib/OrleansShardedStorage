@@ -1,10 +1,5 @@
-﻿using Azure.Storage.Files.Shares;
-using Microsoft.Extensions.Logging;
-using Orleans;
-using Orleans.Runtime;
-using Orleans.Storage;
-using Azure.Storage.Files.Shares;
-using Azure.Storage.Files.Shares.Models;
+﻿using Azure;
+using Azure.Data.Tables;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,14 +9,11 @@ using Orleans.Configuration;
 using Orleans.Runtime;
 using Orleans.Storage;
 using System.Diagnostics;
-using Azure.Data.Tables;
-using Azure.Data.Tables.Models;
-using Azure;
 using System.Text;
 
 namespace OrleansShardedStorageProvider
 {
-    public class AzureShardedTablGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
+    public class AzureShardedTableGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
     {
         private readonly string _serviceId;
         private readonly string _name;
@@ -31,10 +23,10 @@ namespace OrleansShardedStorageProvider
         private List<TableClient> _tableClients = new List<TableClient>();
 
 
-        public AzureShardedTablGrainStorage(string name, AzureShardedTableStorageOptions options, IOptions<ClusterOptions> clusterOptions, ILoggerFactory loggerFactory)
+        public AzureShardedTableGrainStorage(string name, AzureShardedTableStorageOptions options, IOptions<ClusterOptions> clusterOptions, ILoggerFactory loggerFactory)
         {
             this._name = name;
-            var loggerName = $"{typeof(AzureShardedTablGrainStorage).FullName}.{name}";
+            var loggerName = $"{typeof(AzureShardedTableGrainStorage).FullName}.{name}";
             this._logger = loggerFactory.CreateLogger(loggerName);
             this._options = options;
             this._serviceId = clusterOptions.Value.ServiceId;
@@ -42,7 +34,7 @@ namespace OrleansShardedStorageProvider
 
         public void Participate(ISiloLifecycle lifecycle)
         {
-            lifecycle.Subscribe(OptionFormattingUtilities.Name<AzureShardedTablGrainStorage>(this._name), this._options.InitStage, this.Init, this.Close);
+            lifecycle.Subscribe(OptionFormattingUtilities.Name<AzureShardedTableGrainStorage>(this._name), this._options.InitStage, this.Init, this.Close);
         }
 
 
@@ -310,7 +302,7 @@ namespace OrleansShardedStorageProvider
         public static IGrainStorage Create(IServiceProvider services, string name)
         {
             var options = services.GetRequiredService<IOptionsMonitor<AzureShardedTableStorageOptions>>().Get(name);
-            return ActivatorUtilities.CreateInstance<AzureShardedTablGrainStorage>(services, options, name);
+            return ActivatorUtilities.CreateInstance<AzureShardedTableGrainStorage>(services, options, name);
         }
     }
 }
