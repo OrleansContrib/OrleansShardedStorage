@@ -96,8 +96,8 @@ namespace OrleansShardedStorageProvider
 
             try
             {
-                var pk = GetKeyString(ref grainReference);
-                var connectionIndex = GetShardNumberFromKey(ref grainReference);
+                var pk = GetKeyString(grainReference);
+                var connectionIndex = GetShardNumberFromKey(grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
 
 
@@ -151,8 +151,8 @@ namespace OrleansShardedStorageProvider
             try
             {
                 
-                string pk = GetKeyString(ref grainReference);
-                var connectionIndex = GetShardNumberFromKey(ref grainReference);
+                string pk = GetKeyString(grainReference);
+                var connectionIndex = GetShardNumberFromKey( grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
                 var entity = new TableEntity(pk, rowKey)
                 {
@@ -193,8 +193,8 @@ namespace OrleansShardedStorageProvider
 
             try
             {
-                var pk = GetKeyString(ref grainReference);
-                var connectionIndex = GetShardNumberFromKey(ref grainReference);
+                var pk = GetKeyString(grainReference);
+                var connectionIndex = GetShardNumberFromKey(grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
                 var res = await _tableClients[connectionIndex].GetEntityAsync<TableEntity>(pk, rowKey);
                 if(res != null)
@@ -223,11 +223,20 @@ namespace OrleansShardedStorageProvider
 
         #region "Utils"
 
-        private int GetShardNumberFromKey(ref GrainReference grainReference)
+        private int GetShardNumberFromKey(GrainReference grainReference)
         {
-            var hash = Math.Abs(grainReference.GetHashCode());
+            int storageNum = 0;
 
-            var storageNum = hash % this._options.ConnectionStrings.Count();
+            if(grainReference.GrainIdentity.PrimaryKeyLong != null)
+            {
+                storageNum = (int)(grainReference.GrainIdentity.PrimaryKeyLong % (long)this._options.ConnectionStrings.Count());
+            }
+            else
+            {
+                // WARNING: This appears to be providing more weight to lower numbers (0,1,2)
+                var hash = Math.Abs(grainReference.GetHashCode());
+                storageNum = hash % this._options.ConnectionStrings.Count();
+            }
 
             return storageNum;
         }
@@ -264,7 +273,7 @@ namespace OrleansShardedStorageProvider
 
         private const string KeyStringSeparator = "__";
 
-        private string GetKeyString(ref GrainReference grainReference)
+        private string GetKeyString(GrainReference grainReference)
         {
             var key = $"{this._serviceId}{KeyStringSeparator}{grainReference.ToKeyString()}";
 
