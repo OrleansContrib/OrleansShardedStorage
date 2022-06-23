@@ -217,50 +217,11 @@ namespace OrleansShardedStorageProvider
 
         private int GetShardNumberFromKey(GrainReference grainReference)
         {
-            int storageNum = 0;
-
-            if(grainReference.GrainIdentity.PrimaryKeyLong != null)
-            {
-                storageNum = (int)(grainReference.GrainIdentity.PrimaryKeyLong % (long)this._options.ConnectionStrings.Count());
-            }
-            else
-            {
-                // WARNING: This appears to be providing more weight to lower numbers (0,1,2)
-                var hash = Math.Abs(grainReference.GetHashCode());
-                storageNum = hash % this._options.ConnectionStrings.Count();
-            }
+            var hash = grainReference.GetHashCode();
+            var storageNum = Math.Abs(hash % this._options.ConnectionStrings.Count());
 
             return storageNum;
         }
-
-
-        //private int GetShardNumberFromKey(string pk)
-        //{
-        //    var hash = GetDeterministicHashCode(pk);
-
-        //    var storageNum = hash % this._options.ConnectionStrings.Count();
-
-        //    return storageNum;
-        //}
-
-        //private int GetDeterministicHashCode(string str)
-        //{
-        //    unchecked
-        //    {
-        //        int hash1 = (5381 << 16) + 5381;
-        //        int hash2 = hash1;
-
-        //        for (int i = 0; i < str.Length; i += 2)
-        //        {
-        //            hash1 = ((hash1 << 5) + hash1) ^ str[i];
-        //            if (i == str.Length - 1)
-        //                break;
-        //            hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
-        //        }
-
-        //        return Math.Abs(hash1 + (hash2 * 1566083941)); // Return only positives for this implementation
-        //    }
-        //}
 
 
         private const string KeyStringSeparator = "__";
