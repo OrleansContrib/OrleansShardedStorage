@@ -4,7 +4,6 @@
     {
         public AzureTableStorageConnection()
         {
-
         }
 
         public AzureTableStorageConnection(string accountName, string sasToken)
@@ -21,14 +20,10 @@
             TableStorageUri = new Uri($"https://{accountName}.table.core.windows.net/{tableName}");
         }
 
-
         public Uri BaseTableUri { get; set; }
         public string AccountName { get; set; }
-
         public string SasToken { get; set; }
-
         public string TableName { get; set; }
-
         public Uri TableStorageUri { get; set; }
     }
 }

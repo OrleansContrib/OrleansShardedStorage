@@ -55,10 +55,7 @@ namespace OrleansShardedStorageProvider
                         storage.BaseTableUri,
                         new AzureSasCredential(storage.SasToken));
 
-
-
                     var table = await shareClient.CreateTableIfNotExistsAsync(storage.TableName);
-
 
                     var tableClient = new TableClient(
                                 storage.TableStorageUri,
@@ -66,10 +63,6 @@ namespace OrleansShardedStorageProvider
 
                     this._tableClients.Add(tableClient);
                 }
-
-
-                
-
 
                 stopWatch.Stop();
                 this._logger.LogInformation($"Initializing provider {this._name} of type {this.GetType().Name} in stage {this._options.InitStage} took {stopWatch.ElapsedMilliseconds} Milliseconds.");
@@ -182,7 +175,6 @@ namespace OrleansShardedStorageProvider
         {
             if (this._tableClients == null || !this._tableClients.Any()) throw new ArgumentException("GrainState collection not initialized.");
 
-
             try
             {
                 var pk = GetKeyString(grainReference);
@@ -210,16 +202,12 @@ namespace OrleansShardedStorageProvider
         }
 
 
-
-
-
         #region "Utils"
 
         private int GetShardNumberFromKey(GrainReference grainReference)
         {
             var hash = grainReference.GetHashCode();
             var storageNum = Math.Abs(hash % this._options.ConnectionStrings.Count());
-
             return storageNum;
         }
 
@@ -229,7 +217,6 @@ namespace OrleansShardedStorageProvider
         private string GetKeyString(GrainReference grainReference)
         {
             var key = $"{this._serviceId}{KeyStringSeparator}{grainReference.ToKeyString()}";
-
             return SanitizeTableProperty(key);
         }
 
@@ -251,11 +238,6 @@ namespace OrleansShardedStorageProvider
 
 
         #endregion
-
-
-
-
-
     }
 
     public static class AzureFileGrainStorageFactory
