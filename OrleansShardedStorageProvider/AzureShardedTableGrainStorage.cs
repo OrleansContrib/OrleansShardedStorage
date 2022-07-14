@@ -212,7 +212,7 @@ namespace OrleansShardedStorageProvider
         }
 
 
-        private const string KeyStringSeparator = "__";
+        private const string KeyStringSeparator = "_";
 
         private string GetKeyString(GrainReference grainReference)
         {
