@@ -6,6 +6,8 @@ This can help increase throughput.
 
 It's only experimental. There could well be issues with it!
 
+WARNING: It does not (yet), break up data too large for one column into multiple columns.
+
 ## How to Use
 
 
