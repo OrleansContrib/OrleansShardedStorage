@@ -3,10 +3,10 @@
 namespace OrleansShardedStorageProvider
 {
 
-    public class AzureShardedTableStorageOptions
+    public class AzureShardedStorageOptions
     {
         //[Redact] -- stops any logging of this info
-        public List<AzureTableStorageConnection> ConnectionStrings { get; set; }
+        public List<AzureShardedStorageConnection> ConnectionStrings { get; set; }
 
         public int InitStage { get; set; } = DEFAULT_INIT_STAGE;
 
