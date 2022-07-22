@@ -8,7 +8,8 @@ It can handle Table Storage and Blob Storage.
 
 It is experimental - I take no responsibility for any bugs in it!
 
-Unlike Orleans Standard Libraries, for table storage, this will not split data up over multiple columns - large data will break!
+WARNING: Unlike Orleans Standard Libraries, for table storage, this will not split data up over multiple columns - large data will break!
+
 
 
 ## How to Use
