@@ -45,16 +45,20 @@ namespace OrleansShardedStorageProvider
         {
             var stopWatch = Stopwatch.StartNew();
 
+            // This is required to give more detailed logging if it errors.
+            int exConfigIdx = -1;
+
             try
             {
                 var initMsg = string.Format("Init: Name={0} ServiceId={1}", this._name, this._serviceId);
 
                 this._logger.LogInformation($"Azure File Storage Grain Storage {this._name} is initializing: {initMsg}");
 
-
-                foreach(var storage in this._options.ConnectionStrings)
+                foreach (var storage in this._options.ConnectionStrings)
                 {
-                    if(storage.StorageType == StorageType.TableStorage)
+                    exConfigIdx++;
+
+                    if (storage.StorageType == StorageType.TableStorage)
                     {
                         _storageType = StorageType.TableStorage;
 
@@ -94,7 +98,17 @@ namespace OrleansShardedStorageProvider
             catch (Exception exc)
             {
                 stopWatch.Stop();
-                this._logger.LogError($"Initialization failed for provider {this._name} of type {this.GetType().Name} in stage {this._options.InitStage} in {stopWatch.ElapsedMilliseconds} Milliseconds.", exc);
+
+                string whereString = "where unknown placeholder";
+                if (exConfigIdx >= 0)
+                {
+                    var excon = this._options.ConnectionStrings[exConfigIdx];
+                    var exStorageAcct = excon.AccountName;
+                    var exStorageType = excon.StorageType.ToString();
+                    whereString = $"CN:{exConfigIdx},Name:{exStorageAcct},Type:{exStorageType}. ";
+                }
+
+                this._logger.LogError($"{whereString}. Initialization failed for provider {this._name} of type {this.GetType().Name} in stage {this._options.InitStage} in {stopWatch.ElapsedMilliseconds} Milliseconds.", exc);
                 throw;
             }
         }
@@ -104,14 +118,17 @@ namespace OrleansShardedStorageProvider
             if (this._storageType == StorageType.TableStorage &&
                 (this._tableClients == null || !this._tableClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
 
+            // This is required to give more detailed logging if it errors.
+            int exConfigIdx = -1;
+
             try
             {
                 var pk = GetKeyString(grainReference);
                 var connectionIndex = GetShardNumberFromKey(grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
+                exConfigIdx = connectionIndex;
 
-
-                if(this._storageType == StorageType.TableStorage)
+                if (this._storageType == StorageType.TableStorage)
                 {
                     // NOTE: This will error if the row doesn't exist - it's disputed functionality from the Azure team
                     //       In orleans, they just swallow the error, so we're doing the same
@@ -152,7 +169,7 @@ namespace OrleansShardedStorageProvider
 
                     var exists = await blobClient.ExistsAsync();
 
-                    if(exists)
+                    if (exists)
                     {
                         var download = await blobClient.DownloadContentAsync();
                         BinaryData binData = download.Value.Content;
@@ -182,12 +199,32 @@ namespace OrleansShardedStorageProvider
             }
             catch (Exception exc)
             {
+                var errorString = exc.ToString();
+
                 // See comments above for GetEntityAsync error details
-                if (!exc.ToString().Contains("The specified resource does not exist") &&
-                    !exc.ToString().Contains("The specified blob does not exist"))
+                if (errorString.Contains("The specified resource does not exist") ||
+                    errorString.Contains("The specified blob does not exist"))
                 {
-                    this._logger.LogError(exc, $"Failure reading state for Grain Type {grainType} with Id {grainReference}.");
-                    throw;//?
+                    // We expect this error. There's nothing we can do about it. See comments above.
+                }
+                else
+                {
+                    string grainRef = $"Failure reading state for Grain Type {grainType} with Id {grainReference}.";
+                    string whereMsg = "unknown location placeholder." + grainRef;
+                    if (exConfigIdx >= 0)
+                    {
+                        var conx = this._options.ConnectionStrings[exConfigIdx];
+                        var exAcctName = conx.AccountName;
+                        var exAcctType = conx.StorageType.ToString();
+                        var exTblCtrName = conx.TableOrContainerName;
+
+                        whereMsg = $"Idx:{exConfigIdx},Acct:{exAcctName},Type:{exAcctType},TblCtr:{exTblCtrName}. {grainRef}. ";
+                    }
+
+                    var overall = whereMsg + exc.ToString();
+
+                    this._logger.LogError(overall, grainRef);
+                    throw;
                 }
             }
         }
@@ -197,13 +234,15 @@ namespace OrleansShardedStorageProvider
             if (this._storageType == StorageType.TableStorage && (this._tableClients == null || !this._tableClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
             if (this._storageType == StorageType.BlobStorage && (this._blobClients == null || !this._blobClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
 
+            // This is required to give more detailed logging if it errors.
+            int exConfigIdx = -1;
+
             try
             {
-                
                 string pk = GetKeyString(grainReference);
-                var connectionIndex = GetShardNumberFromKey( grainReference);
+                var connectionIndex = GetShardNumberFromKey(grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
-
+                exConfigIdx = connectionIndex;
 
                 if (this._storageType == StorageType.TableStorage)
                 {
@@ -257,8 +296,22 @@ namespace OrleansShardedStorageProvider
             }
             catch (Exception exc)
             {
-                this._logger.LogError(exc, $"Failure writing state for Grain Type {grainType} with Id {grainReference}.");
-                throw;
+                string grainRef = $"Failure WRITING state for Grain Type {grainType} with Id {grainReference}.";
+                string whereMsg = "unknown location placeholder." + grainRef;
+                if (exConfigIdx >= 0)
+                {
+                    var conx = this._options.ConnectionStrings[exConfigIdx];
+                    var exAcctName = conx.AccountName;
+                    var exAcctType = conx.StorageType.ToString();
+                    var exTblCtrName = conx.TableOrContainerName;
+
+                    whereMsg = $"Idx:{exConfigIdx},Acct:{exAcctName},Type:{exAcctType},TblCtr:{exTblCtrName}. {grainRef}. ";
+                }
+
+                var overall = whereMsg + exc.ToString();
+
+                this._logger.LogError(overall, $"Failure writing state for Grain Type {grainType} with Id {grainReference}.");
+                throw; // Definitely throw this error.
             }
         }
 
@@ -266,13 +319,14 @@ namespace OrleansShardedStorageProvider
         public async Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
         {
             if (this._tableClients == null || !this._tableClients.Any()) throw new ArgumentException("GrainState collection not initialized.");
-
+            int exConfigIdx = -1;
 
             try
             {
                 var pk = GetKeyString(grainReference);
                 var connectionIndex = GetShardNumberFromKey(grainReference);
                 var rowKey = SanitizeTableProperty(grainType);
+                exConfigIdx = connectionIndex;
 
                 if (this._storageType == StorageType.TableStorage)
                 {
@@ -295,11 +349,25 @@ namespace OrleansShardedStorageProvider
                     throw new NotImplementedException("type not implemented for read");
                 }
 
-                
+
             }
             catch (Exception exc)
             {
-                this._logger.LogError(exc, $"Failure clearing state for Grain Type {grainType} with Id {grainReference}.");
+                string grainRef = $"Failure CLEARING state for Grain Type {grainType} with Id {grainReference}.";
+                string whereMsg = "unknown location placeholder." + grainRef;
+                if (exConfigIdx >= 0)
+                {
+                    var conx = this._options.ConnectionStrings[exConfigIdx];
+                    var exAcctName = conx.AccountName;
+                    var exAcctType = conx.StorageType.ToString();
+                    var exTblCtrName = conx.TableOrContainerName;
+
+                    whereMsg = $"Idx:{exConfigIdx},Acct:{exAcctName},Type:{exAcctType},TblCtr:{exTblCtrName}. {grainRef}. ";
+                }
+
+                var overall = whereMsg + exc.ToString();
+
+                this._logger.LogError(overall, $"Failure clearing state for Grain Type {grainType} with Id {grainReference}.");
                 throw;
             }
         }
@@ -365,11 +433,6 @@ namespace OrleansShardedStorageProvider
 
 
         #endregion
-
-
-
-
-
     }
 
     public static class AzureShardedGrainStorageFactory

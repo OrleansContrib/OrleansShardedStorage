@@ -10,7 +10,7 @@ It is experimental - I take no responsibility for any bugs in it!
 
 WARNING: Unlike Orleans Standard Libraries, for table storage, this will not split data up over multiple columns - large data will break!
 
-
+Many of the Orleans methods are internal or private, so I can't access them. As such, this is fully home-brewed.
 
 ## How to Use
 
