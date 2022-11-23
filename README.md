@@ -6,7 +6,9 @@ This is for Orleans 7+. See here for the deprecated [3.6.2 version](https://gith
 
 # What is it?
 
-This project is about splitting data between storage accounts to get past the [Request Limitations per account](https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account), which can easily be hit in high throughput applications.
+Azure Storage has [Request Limitations per storage account](https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account), which can easily be hit in high throughput applications. 
+
+This code will '[shard](https://learn.microsoft.com/en-us/azure/architecture/patterns/sharding)' Orleans grains over multiple storage accounts to avoid bottlenecks. This is useful if you're running/updating many thousands of the same type of grain at once.
 
 It can handle Table Storage and Blob Storage.
 
@@ -14,15 +16,17 @@ It can handle Table Storage and Blob Storage.
 
 `OrleansShardedStorageProvider` will split grain data fairly evenly over a number of table storage accounts to help increase throughput. 
 
-It does this by taking a hash of the grainreference and using a modulus of that to work out where to store information for that grain.
+It does this by taking a hash of the grain reference and using a modulus of that to work out where to store information for that grain.
 
 ## WARNINGS
 
+**You cannot change the number of storage accounts at a later date. What you start with is what you're stuck with!** This is common for sharded solutions.
+
 It is experimental - I take no responsibility for any bugs in it!
 
-IMPORTANT: Unlike Orleans Standard Libraries; for table storage, this will not split data up over multiple columns - large data will break saving to table storage!
+**Unlike Orleans Standard Libraries; for table storage, this will not split data up over multiple columns - large data will break saving to table storage (so use Blob storage as a work around)!**
 
-Many of the Orleans classes/methods (such as `AzureTableDataManager`) are internal or private, so I can't access them. As such, this is fully home-brewed.
+Many of the Orleans library classes/methods (such as `AzureTableDataManager`) are internal or private, so I can't access them. As such, this is fully home-brewed. Here is a list of files referred to in making this `OrleansShardedStorageProvider\OrleansRefs.txt`.
 
 ----
 ----
