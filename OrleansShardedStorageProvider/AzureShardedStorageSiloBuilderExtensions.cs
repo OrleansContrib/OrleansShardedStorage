@@ -10,9 +10,10 @@ using Orleans.Storage;
 
 namespace OrleansShardedStorageProvider
 {
-    /// <summary>
-    /// Ref: src\Azure\Orleans.Persistence.AzureStorage\Hosting\AzureTableSiloBuilderExtensions.cs
-    /// </summary>
+    /// <remarks>
+    /// Origin: https://github.com/JsAndDotNet/OrleansShardedStorage
+    /// Ref: Oreleans:src\Azure\Orleans.Persistence.AzureStorage\Hosting\AzureTableSiloBuilderExtensions.cs
+    /// </remarks>
     public static class AzureShardedStorageSiloBuilderExtensions
     {
         /// <summary>
@@ -50,27 +51,6 @@ namespace OrleansShardedStorageProvider
             return builder.ConfigureServices(services => services.AddAzureShardedGrainStorage(name, configureOptions));
         }
 
-
-        ///// <summary>
-        ///// Configure silo to use azure ShardedTable storage for grain storage.
-        ///// </summary>
-        //public static ISiloBuilder AddAzureShardedTableGrainStorage(this ISiloBuilder builder, string name, Action<OptionsBuilder<AzureFileStorageOptions>> configureOptions = null)
-        //{
-        //    return builder.ConfigureServices(services => services.AddAzureShardedTableGrainStorage(name, configureOptions));
-        //}
-
-        // OLD
-        //internal static IServiceCollection AddAzureShardedGrainStorage(this IServiceCollection services, string name,
-        //    Action<OptionsBuilder<AzureShardedStorageOptions>> configureOptions = null)
-        //{
-        //    configureOptions?.Invoke(services.AddOptions<AzureShardedStorageOptions>(name));
-        //    services.ConfigureNamedOptionForLogging<AzureShardedStorageOptions>(name);
-        //    services.TryAddSingleton<IGrainStorage>(sp => sp.GetServiceByName<IGrainStorage>(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME));
-        //    return services.AddSingletonNamedService<IGrainStorage>(name, AzureShardedGrainStorageFactory.Create)
-        //                   .AddSingletonNamedService<ILifecycleParticipant<ISiloLifecycle>>(name, (s, n) => (ILifecycleParticipant<ISiloLifecycle>)s.GetRequiredServiceByName<IGrainStorage>(n));
-        //}
-
-        //>
 
         internal static IServiceCollection AddAzureShardedGrainStorage(
             this IServiceCollection services,

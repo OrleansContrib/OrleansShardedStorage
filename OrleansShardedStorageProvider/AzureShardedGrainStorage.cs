@@ -15,9 +15,10 @@ using System.Text;
 
 namespace OrleansShardedStorageProvider
 {
-    /// <summary>
-    /// Similar to src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureTableStorage.cs
-    /// </summary>
+    /// <remarks>
+    /// Origin: https://github.com/JsAndDotNet/OrleansShardedStorage
+    /// Similar to Oreleans:src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureTableStorage.cs
+    /// </remarks>
     public class AzureShardedGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
     {
         private readonly string _serviceId;
