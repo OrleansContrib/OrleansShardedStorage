@@ -20,13 +20,15 @@ It does this by taking a hash of the grain reference and using a modulus of that
 
 ## WARNINGS
 
-**You cannot change the number of storage accounts at a later date. What you start with is what you're stuck with!** This is common for sharded solutions.
+**You cannot change the number of storage accounts at a later date. What you start with is what you're stuck with! This is common for sharded solutions.**
 
 It is experimental - I take no responsibility for any bugs in it!
 
 **Unlike Orleans Standard Libraries; for table storage, this will not split data up over multiple columns - large data will break saving to table storage (so use Blob storage as a work around)!**
 
 Many of the Orleans library classes/methods (such as `AzureTableDataManager`) are internal or private, so I can't access them. As such, this is fully home-brewed. Here is a list of files referred to in making this `OrleansShardedStorageProvider\OrleansRefs.txt`.
+
+**This version is not compatible with the 3.6.2 branch version.**
 
 Each Provider must be of one type. i.e. You can have many Table Storage Providers and/or many Blob Storage Providers, but you can't have a provider that's both Table and Blob storage.
 
