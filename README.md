@@ -6,7 +6,7 @@ This is for Orleans 7+. See here for the deprecated [3.6.2 version](https://gith
 
 # What is it?
 
-Azure Storage has [request per second limitations per storage account](https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account), which can easily be hit in high throughput applications. 
+Azure Storage has [request per second limitations](https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account) per storage account, which can easily be hit in high throughput applications. 
 
 This code will '[shard](https://learn.microsoft.com/en-us/azure/architecture/patterns/sharding)' Orleans grains over multiple storage accounts to avoid bottlenecks. This is useful if you're running/updating many thousands of the same type of grain at once.
 
