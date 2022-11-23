@@ -39,18 +39,9 @@ To run the test application:
 
 1. Open `OrleansShardedStorage.sln` in VS2022 (>=17.4.1).
 
-2. To get up and running, you will need to create a few Storage Accounts in Azure. `OrleansShardedStorageProvider\create-multiple-storage-accounts.ps1` will create 6 storage accounts and output a list you can put in the sample app config. You will need to update some info at the top of this script to get it to work!
+2. To get up and running, you will need to create a few Storage Accounts in Azure. You can do this in the Azure Portal or using the provide script. `OrleansShardedStorageProvider\create-multiple-storage-accounts.ps1` will create 6 storage accounts and output a list you can put in the sample app config. You will need to update some info at the top of this script to get it to work! If it creates the resource group, the output seems to stick, so wait 5 mins and it should be done.
 
-```
-...
-{
-        "Name": "account2",
-        "SasToken": "?sastoken..."
-}
-...
-```
-
-3. In either `secrets.json` or `appsettings.json` for `TestApplication\Silo`, add 3 names/sas tokens to `TableStorageAccounts` and 3 to `BlobStorageAccounts`. The final config will look something like:
+3. In `TestApplication\Silo`, update `appsettings.json`. Add 3 names/sastoken pairs to `TableStorageAccounts` and 3 to `BlobStorageAccounts`. (Note: You could use appsettings as a template and update `secrets.json`) The final config will look something like:
 
 ```
 {
@@ -96,16 +87,21 @@ To run the test application:
 
 5. Run `TestApplication\Client\Client.csproj`
 
-6. The client will call/create 100 grains that save to table storage and 100 that save to blob storage. If you view your storage accounts in `Microsoft Azure Storage Explorer` (or equivalent), you will see the data has been split across multiple accounts. 
+>NOTE: The client will be slow because it's running in debug and I haven't multi-threaded it for ease for understanding.
+
+6. The client will call/create 100 grains that save to table storage and 100 that save to blob storage. If you view your storage accounts in `Microsoft Azure Storage Explorer` (or equivalent), you will see the data has been split across multiple accounts.
+
+>The Table storage splits (33,33,34) and Blob Storage splits (34,35,31)
 
 7. Stop the Client/Silo and start again. If you put breakpoints in the grains `OnActivateAsync`, you will see data loaded back into the grain.
 
 >NOTE: Running in Visual Studio in debug is slow. To run at rull speed you need to be in Release and run the exe's outside VS.
 
+8. END
 
 ## Setting Up Your Own Application
 
-1. First you'll need to copy the `OrleansShardedStorageProvider` into the same folder as your solution (there's no Nuget Package yet, because I don't want the support calls :smile:).
+1. First you'll need to copy the `OrleansShardedStorageProvider` into the same folder as your solution (there's no Nuget Package yet, because I don't want the support :smile: ).
 
 2. In Visual Studio, Add an existing project reference to `OrleansShardedStorageProvider.csproj`.
 
@@ -119,7 +115,7 @@ foreach(var row in yourListOfStorageAccountsAndSasTokens)
 }
 ```
 
-4. Now in the hostbuilder, add the `AddAzureShardedGrainStorage` with a name (e.g. "ShardedTableStorageStore") and the connectionstrings:
+4. Now in the `HostBuilder`, add the `AddAzureShardedGrainStorage` with a name (e.g. "ShardedTableStorageStore") and the connectionstrings:
 
 ```
 var builder = new HostBuilder()
