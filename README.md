@@ -28,6 +28,8 @@ It is experimental - I take no responsibility for any bugs in it!
 
 Many of the Orleans library classes/methods (such as `AzureTableDataManager`) are internal or private, so I can't access them. As such, this is fully home-brewed. Here is a list of files referred to in making this `OrleansShardedStorageProvider\OrleansRefs.txt`.
 
+Each Provider must be of one type. i.e. You can have many Table Storage Providers and/or many Blob Storage Providers, but you can't have a provider that's both Table and Blob storage.
+
 ----
 ----
 
@@ -107,9 +109,9 @@ To run the test application:
 
 1. First you'll need to copy the `OrleansShardedStorageProvider` into the same folder as your solution (there's no Nuget Package yet, because I don't want the support :smile: ).
 
-2. In Visual Studio, Add an existing project reference to `OrleansShardedStorageProvider.csproj`.
+2. In Visual Studio, add an 'existing project reference' to `OrleansShardedStorageProvider.csproj`.
 
-3. In the silo, you will need to load in a set of storage account names/sas tokens using code as shown below.
+3. In the silo, you will need to load in a set of storage account names/sas tokens using code as shown below (change the StorageType if you want Blob storage).
 
 ```
 List<AzureShardedStorageConnection> tableGrainStores = new List<AzureShardedStorageConnection>();
