@@ -43,7 +43,7 @@ To run the test application:
 
 1. Open `OrleansShardedStorage.sln` in VS2022 (>=17.4.1).
 
-2. To get up and running, you will need to create a few Storage Accounts in Azure. You can do this in the Azure Portal or using the provide script. `OrleansShardedStorageProvider\create-multiple-storage-accounts.ps1` will create 6 storage accounts and output a list you can put in the sample app config. You will need to update some info at the top of this script to get it to work! If it creates the resource group, the output seems to stick, so wait 5 mins and it should be done.
+2. To get up and running, you will need to create a few Storage Accounts in Azure. You can do this in the Azure Portal or using the provided script. `OrleansShardedStorageProvider\create-multiple-storage-accounts.ps1` will create 6 storage accounts and output a list you can put in the sample app config. You will need to update some info at the top of this script to get it to work. If it creates the resource group, the output seems to stick, so wait 5 mins and it should be done.
 
 3. In `TestApplication\Silo`, update `appsettings.json`. Add 3 names/sastoken pairs to `TableStorageAccounts` and 3 to `BlobStorageAccounts`. (Note: You could use appsettings as a template and update `secrets.json`) The final config will look something like:
 
@@ -97,9 +97,9 @@ To run the test application:
 
 >The Table storage splits (33,33,34) and Blob Storage splits (34,35,31)
 
-7. Stop the Client/Silo and start again. If you put breakpoints in the grains `OnActivateAsync`, you will see data loaded back into the grain.
+7. Stop the Client/Silo and start again. If you put breakpoints in the grains `OnActivateAsync`, you will see data loaded back into the grain. Such 'checking' code should not exist in prod as it'll slow the grain down - it's just here to help demo!
 
->NOTE: Running in Visual Studio in debug is slow. To run at rull speed you need to be in Release and run the exe's outside VS.
+>NOTE: Running in Visual Studio in debug is slow. To run at full speed you need to be in Release and run the exe's outside VS.
 
 8. END
 

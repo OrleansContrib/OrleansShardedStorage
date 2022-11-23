@@ -50,8 +50,8 @@ static async Task DoClientWorkAsync(IClusterClient client)
 {
     Console.WriteLine($"NOTE: As with all Orleans stuff. Run Client+Silo in 'Release', outside of Visual Studio for fastest results");
 
+    // Calls to SmallDataGrain (which uses table storage)
     int iterationsTbl = 100;
-    int iterationsBlob = 100;
     for (int i = 0; i < iterationsTbl; i++)
     {
         var friend = client.GetGrain<ISmallDataGrain>(i);
@@ -59,7 +59,8 @@ static async Task DoClientWorkAsync(IClusterClient client)
         Console.WriteLine($"{response}");
     }
 
-
+    // Calls to LargeDataGrain (which uses blob storage)
+    int iterationsBlob = 100;
     for (int i = 0; i < iterationsBlob; i++)
     {
         var friend = client.GetGrain<ILargeDataGrain>(i.ToString());
