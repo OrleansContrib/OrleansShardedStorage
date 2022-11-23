@@ -1,4 +1,4 @@
-# Orleans Sharded Storage Provider (TABLES AND BLOBS) - WARNING: This is v3 of Orleans. I'm hoping to create a v7 soon.
+# Orleans Sharded Storage Provider (TABLES AND BLOBS) - WARNING: This is v3.6.2 of Orleans. See the [main branch](https://github.com/JsAndDotNet/OrleansShardedStorage) for v7.
 
 This project will split grain data fairly evenly over a number of table storage accounts. 
 
