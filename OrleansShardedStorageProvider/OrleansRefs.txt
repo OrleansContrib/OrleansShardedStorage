@@ -1,0 +1,13 @@
+﻿Main project references:
+src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureTableStorage.cs
+src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureBlobStorage.cs
+src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureTableStorageOptions.cs
+src\Azure\Orleans.Persistence.AzureStorage\Hosting\AzureTableSiloBuilderExtensions.cs
+
+src\Azure\Shared\Storage\AzureBlobUtils.cs
+src\Orleans.Core\Providers\StorageSerializer\GrainStorageSerializer.cs
+src\Orleans.Core\Providers\StorageSerializer\OrleansGrainStateSerializer.cs
+
+
+
+

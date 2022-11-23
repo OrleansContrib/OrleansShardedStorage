@@ -15,6 +15,9 @@ using System.Text;
 
 namespace OrleansShardedStorageProvider
 {
+    /// <summary>
+    /// Similar to src\Azure\Orleans.Persistence.AzureStorage\Providers\Storage\AzureTableStorage.cs
+    /// </summary>
     public class AzureShardedGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
     {
         private readonly string _serviceId;
@@ -113,7 +116,7 @@ namespace OrleansShardedStorageProvider
             }
         }
 
-        public async Task ReadStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
+        async Task IGrainStorage.ReadStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
         {
             if (this._storageType == StorageType.TableStorage &&
                 (this._tableClients == null || !this._tableClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
@@ -123,9 +126,10 @@ namespace OrleansShardedStorageProvider
 
             try
             {
-                var pk = GetKeyString(grainReference);
-                var connectionIndex = GetShardNumberFromKey(grainReference);
-                var rowKey = SanitizeTableProperty(grainType);
+                // NOTE: grainId does not always match the number expected for int keys, but they are consistent
+                var pk = GetKeyString(grainId);
+                var connectionIndex = GetShardNumberFromKey(pk);
+                var rowKey = SanitizeTableProperty(stateName);
                 exConfigIdx = connectionIndex;
 
                 if (this._storageType == StorageType.TableStorage)
@@ -147,7 +151,7 @@ namespace OrleansShardedStorageProvider
                             new JsonTextReader(new StringReader(stringData)))
                             {
                                 JsonSerializer ser = new JsonSerializer();
-                                grainState.State = ser.Deserialize(jsonReader, grainState.State.GetType());
+                                grainState.State = ser.Deserialize<T>(jsonReader);
                             }
                         }
 
@@ -157,7 +161,7 @@ namespace OrleansShardedStorageProvider
 
                     if (grainState.State == null)
                     {
-                        grainState.State = Activator.CreateInstance(grainState.State.GetType());
+                        grainState.State = Activator.CreateInstance<T>();
                         grainState.RecordExists = true;
                     }
                 }
@@ -183,7 +187,7 @@ namespace OrleansShardedStorageProvider
                             new JsonTextReader(new StringReader(stringData)))
                             {
                                 JsonSerializer ser = new JsonSerializer();
-                                grainState.State = ser.Deserialize(jsonReader, grainState.State.GetType());
+                                grainState.State = ser.Deserialize<T>(jsonReader);
                             }
                         }
 
@@ -209,7 +213,7 @@ namespace OrleansShardedStorageProvider
                 }
                 else
                 {
-                    string grainRef = $"Failure reading state for Grain Type {grainType} with Id {grainReference}.";
+                    string grainRef = $"Failure reading state for Grain Type {stateName} with Id {grainId}.";
                     string whereMsg = "unknown location placeholder." + grainRef;
                     if (exConfigIdx >= 0)
                     {
@@ -227,9 +231,12 @@ namespace OrleansShardedStorageProvider
                     throw;
                 }
             }
+
+
         }
 
-        public async Task WriteStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
+
+        async Task IGrainStorage.WriteStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
         {
             if (this._storageType == StorageType.TableStorage && (this._tableClients == null || !this._tableClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
             if (this._storageType == StorageType.BlobStorage && (this._blobClients == null || !this._blobClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
@@ -239,9 +246,10 @@ namespace OrleansShardedStorageProvider
 
             try
             {
-                string pk = GetKeyString(grainReference);
-                var connectionIndex = GetShardNumberFromKey(grainReference);
-                var rowKey = SanitizeTableProperty(grainType);
+                // NOTE: grainId does not always match the number expected for int keys, but they are consistent
+                var pk = GetKeyString(grainId);
+                var connectionIndex = GetShardNumberFromKey(pk);
+                var rowKey = SanitizeTableProperty(stateName);
                 exConfigIdx = connectionIndex;
 
                 if (this._storageType == StorageType.TableStorage)
@@ -296,7 +304,7 @@ namespace OrleansShardedStorageProvider
             }
             catch (Exception exc)
             {
-                string grainRef = $"Failure WRITING state for Grain Type {grainType} with Id {grainReference}.";
+                string grainRef = $"Failure WRITING state for Grain Type {stateName} with Id {grainId}.";
                 string whereMsg = "unknown location placeholder." + grainRef;
                 if (exConfigIdx >= 0)
                 {
@@ -310,22 +318,22 @@ namespace OrleansShardedStorageProvider
 
                 var overall = whereMsg + exc.ToString();
 
-                this._logger.LogError(overall, $"Failure writing state for Grain Type {grainType} with Id {grainReference}.");
+                this._logger.LogError(overall, $"Failure writing state for Grain Type {stateName} with Id {grainId}.");
                 throw; // Definitely throw this error.
             }
         }
 
 
-        public async Task ClearStateAsync(string grainType, GrainReference grainReference, IGrainState grainState)
+        async Task IGrainStorage.ClearStateAsync<T>(string stateName, GrainId grainId, IGrainState<T> grainState)
         {
             if (this._tableClients == null || !this._tableClients.Any()) throw new ArgumentException("GrainState collection not initialized.");
             int exConfigIdx = -1;
 
             try
             {
-                var pk = GetKeyString(grainReference);
-                var connectionIndex = GetShardNumberFromKey(grainReference);
-                var rowKey = SanitizeTableProperty(grainType);
+                var pk = GetKeyString(grainId);
+                var connectionIndex = GetShardNumberFromKey(pk);
+                var rowKey = SanitizeTableProperty(stateName);
                 exConfigIdx = connectionIndex;
 
                 if (this._storageType == StorageType.TableStorage)
@@ -353,7 +361,7 @@ namespace OrleansShardedStorageProvider
             }
             catch (Exception exc)
             {
-                string grainRef = $"Failure CLEARING state for Grain Type {grainType} with Id {grainReference}.";
+                string grainRef = $"Failure CLEARING state for Grain Type {stateName} with Id {grainId}.";
                 string whereMsg = "unknown location placeholder." + grainRef;
                 if (exConfigIdx >= 0)
                 {
@@ -367,10 +375,11 @@ namespace OrleansShardedStorageProvider
 
                 var overall = whereMsg + exc.ToString();
 
-                this._logger.LogError(overall, $"Failure clearing state for Grain Type {grainType} with Id {grainReference}.");
+                this._logger.LogError(overall, $"Failure clearing state for Grain Type {stateName} with Id {grainId}.");
                 throw;
             }
         }
+
 
         public Task Close(CancellationToken ct)
         {
@@ -397,20 +406,44 @@ namespace OrleansShardedStorageProvider
 
         #region "Utils"
 
-        private int GetShardNumberFromKey(GrainReference grainReference)
+        private int GetShardNumberFromKey(string pk)
         {
-            var hash = grainReference.GetHashCode();
+            var hash = GetStableHashCode(pk);
             var storageNum = Math.Abs(hash % this._options.ConnectionStrings.Count());
 
             return storageNum;
         }
 
+        /// <summary>
+        /// Take from https://stackoverflow.com/a/36845864/852806
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public int GetStableHashCode(string str)
+        {
+            unchecked
+            {
+                int hash1 = 5381;
+                int hash2 = hash1;
+
+                for (int i = 0; i < str.Length && str[i] != '\0'; i += 2)
+                {
+                    hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                    if (i == str.Length - 1 || str[i + 1] == '\0')
+                        break;
+                    hash2 = ((hash2 << 5) + hash2) ^ str[i + 1];
+                }
+
+                return hash1 + (hash2 * 1566083941);
+            }
+        }
+
 
         private const string KeyStringSeparator = "__";
 
-        private string GetKeyString(GrainReference grainReference)
+        private string GetKeyString(GrainId grainId)
         {
-            var key = $"{this._serviceId}{KeyStringSeparator}{grainReference.ToKeyString()}";
+            var key = $"{this._serviceId}{KeyStringSeparator}{grainId}";
 
             return SanitizeTableProperty(key);
         }
@@ -430,6 +463,8 @@ namespace OrleansShardedStorageProvider
 
             return key;
         }
+
+
 
 
         #endregion
