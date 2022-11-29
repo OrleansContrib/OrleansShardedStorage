@@ -444,7 +444,7 @@ namespace OrleansShardedStorageProvider
 
         private string GetKeyString(GrainId grainId)
         {
-            var key = $"{this._serviceId}{KeyStringSeparator}{grainId}";
+            var key = $"{this._serviceId}{KeyStringSeparator}{grainId.ToString()}";
 
             return SanitizeTableProperty(key);
         }
