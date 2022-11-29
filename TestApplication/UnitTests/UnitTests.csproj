@@ -15,9 +15,12 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Orleans.Client" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\OrleansShardedStorageProvider\OrleansShardedStorageProvider.csproj" />
 		<ProjectReference Include="..\GrainInterfaces\GrainInterfaces.csproj" />
 	</ItemGroup>
 
