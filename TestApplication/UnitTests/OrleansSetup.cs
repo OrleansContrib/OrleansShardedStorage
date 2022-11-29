@@ -14,44 +14,6 @@ namespace UnitTests
 {
     internal class OrleansSetup
     {
-        internal static async Task<IHost> StartSiloAsync()
-        {
-            var config = new ConfigurationBuilder()
-           .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-           .Build();
-
-            List<AzureShardedStorageConnection> tableGrainStores = new List<AzureShardedStorageConnection>();
-            List<AzureShardedStorageConnection> blobGrainStores = new List<AzureShardedStorageConnection>();
-
-            var builder = new HostBuilder()
-                .UseOrleans(c =>
-                {
-                    c.UseLocalhostClustering()
-                    .AddAzureShardedGrainStorage("ShardedTableStorageStore", opt =>
-                    {
-                        opt.ConnectionStrings = tableGrainStores;
-                    })
-                    .AddAzureShardedGrainStorage("ShardedBlobStorageStore", opt =>
-                    {
-                        opt.ConnectionStrings = blobGrainStores;
-                    })
-                    .Configure<ClusterOptions>(options =>
-                    {
-                        options.ClusterId = "dev";
-                        options.ServiceId = "OrleansBasics";
-                    })
-                    .ConfigureLogging(
-                        logging => logging.AddConsole().SetMinimumLevel(LogLevel.Information)
-                    );
-                });
-
-            var host = builder.Build();
-            await host.StartAsync();
-
-            return host;
-        }
-
-
 
         internal static async Task<IHost> StartClientAsync()
         {

@@ -2,7 +2,7 @@
 
 namespace UnitTests
 {
-    public class ZNoOrleansTest
+    public class XSimpleTest
     {
         [Fact]
         public async void Test_CanRunAUnitTest_Expect_Success()
