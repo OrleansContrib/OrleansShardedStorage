@@ -109,8 +109,8 @@ To run the test application:
 
 ```
             var clusterTableStorageUri =
-    new Uri($"https://{config.Orleans.ClusterStorageAccount.Name}.table.core.windows.net/OrleansSiloInstances");
-            var clusterTableSas = new AzureSasCredential(config.Orleans.ClusterStorageAccount.SasToken);
+    new Uri($"https://{config.ClusterStorageAccount.Name}.table.core.windows.net/OrleansSiloInstances");
+            var clusterTableSas = new AzureSasCredential(config.ClusterStorageAccount.SasToken);
             
             //.....replace .UseLocalhostClustering with:
 c.UseAzureStorageClustering(options =>
