@@ -105,7 +105,7 @@ To run the test application:
 
 >NOTE: Running in Visual Studio in debug is slow. To run at full speed you need to be in Release and run the exe's outside VS.
 
-> NOTE 2: If you want it distriubted, include a reference to `Microsoft.Orleans.Clustering.AzureStorage` and employ this on the client and silo:
+8: (Just a note) If you want it distriubted, include a reference to `Microsoft.Orleans.Clustering.AzureStorage` and employ this on the client and silo:
 
 ```
             var clusterTableStorageUri =
