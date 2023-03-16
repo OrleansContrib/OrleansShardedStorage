@@ -105,6 +105,22 @@ To run the test application:
 
 >NOTE: Running in Visual Studio in debug is slow. To run at full speed you need to be in Release and run the exe's outside VS.
 
+> NOTE 2: If you want it distriubted, include a reference to `Microsoft.Orleans.Clustering.AzureStorage` and employ this on the client and silo:
+
+```
+            var clusterTableStorageUri =
+    new Uri($"https://{config.Orleans.ClusterStorageAccount.Name}.table.core.windows.net/OrleansSiloInstances");
+            var clusterTableSas = new AzureSasCredential(config.Orleans.ClusterStorageAccount.SasToken);
+            
+            //.....replace .UseLocalhostClustering with:
+c.UseAzureStorageClustering(options =>
+                    {
+                        options.ConfigureTableServiceClient(clusterTableStorageUri, clusterTableSas);
+                    })
+
+
+```
+
 8. END
 
 ## Setting Up Your Own Application
