@@ -6,6 +6,10 @@ using GrainInterfaces;
 using Orleans.Serialization.Invocation;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
+using OrleansCodeGen.Orleans.Core.Internal;
+using GrainInterfaces.Models;
+using GrainInterfaces.Aggregate;
+using System.Diagnostics;
 
 try
 {
@@ -69,6 +73,90 @@ static async Task DoClientWorkAsync(IClusterClient client)
         var response = await friend.SayHello($"Hi LG {i}!");
         Console.WriteLine($"{response}");
     }
+
+
+
+    // Create a list of 100 people. Create 2 games.
+    // Add 100 people to each game
+    // See how long it takes to send the messages and for them to settle (i.e. be counted in the game).
+    // Note: You can play with shortening the intermediary time if you want to speed things up, but that causes extra traffic
+    // so you have to weigh up the pros and the cons.
+    List<Guid> people = new List<Guid>();
+
+    for (int i = 0; i < 100; i++)
+    {
+        people.Add(Guid.NewGuid());
+    }
+
+    var game1 = Guid.NewGuid();
+    var game2 = Guid.NewGuid();
+    var games = new List<Guid>() { game1, game2 };
+
+
+    List<JoinGameMessage> messages = new List<JoinGameMessage>();
+
+    for (int g = 0; g < games.Count(); g++)
+    {
+        var game = games[g];
+
+        for (int i = 0; i < people.Count(); i++)
+        {
+            messages.Add(new JoinGameMessage()
+            {
+                PersonId = people[i],
+                GameGuid = game,
+                Name = $"Game {g}, Person {i}"
+            });
+        }
+    }
+
+
+    Stopwatch st = new Stopwatch();
+    st.Start();
+
+    // Send the messages
+    for (int i = 0; i < messages.Count(); i++)
+    {
+        var msg = messages[i];
+        var person = client.GetGrain<IPersonGrain>(msg.PersonId);
+        var response = await person.JoinGame(msg);
+        Console.WriteLine($"G:{msg.GameGuid},P={msg.PersonId}={response}");
+    }
+
+
+
+    List<Guid> completeSets = new List<Guid>();
+
+    while(completeSets.Count() != games.Count())
+    {
+        foreach(var game in games)
+        {
+            if(!completeSets.Contains(game))
+            {
+                var gameGrain = client.GetGrain<IGameGrain>(game);
+                var count = await gameGrain.GetCountOfPeopleInGame();
+
+                if(count == people.Count())
+                {
+                    completeSets.Add(game);
+                    Console.Write($"Game: {game} complete. Count = {count}", ConsoleColor.Green);
+                }
+                else
+                {
+                    Console.Write($"Game: {game} not yet ready. Count = {count}", ConsoleColor.Yellow);
+                }
+            }
+
+            await Task.Delay(50);
+        }
+    }
+
+    st.Stop();
+
+    Console.WriteLine($"{games.Count()} games, with {people.Count()} people each ready in {st.ElapsedMilliseconds}", ConsoleColor.White);
+    Console.WriteLine("Press any key to continue");
+    Console.ReadLine();
+
 
 
 }

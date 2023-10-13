@@ -11,7 +11,7 @@ namespace Grains
         private readonly IPersistentState<LargeDataGrainState> _state;
 
         public LargeDataGrain(ILogger<LargeDataGrain> logger,
-            [PersistentState("smalldata", "ShardedBlobStorageStore")] IPersistentState<LargeDataGrainState> state
+            [PersistentState("largedata", "ShardedBlobStorageStore")] IPersistentState<LargeDataGrainState> state
             )
         {
             _logger = logger;
