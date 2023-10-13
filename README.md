@@ -199,3 +199,5 @@ public class SmallDataGrain : Orleans.Grain, ISmallDataGrain
 3. Run the tests
 
 > These are only really testing Orleans. The Grain ID is critical to this project working. If that were to ever change the way it generates, this project would need updating in order to upgrade. Guids and Int's are reformatted by Orleans and are not just converted to strings.
+>
+> 
