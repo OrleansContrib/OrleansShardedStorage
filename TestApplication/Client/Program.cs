@@ -103,7 +103,7 @@ static async Task DoClientWorkAsync(IClusterClient client)
         {
             messages.Add(new JoinGameMessage()
             {
-                PersonId = people[i],
+                PersonGuid = people[i],
                 GameGuid = game,
                 Name = $"Game {g}, Person {i}"
             });
@@ -118,9 +118,9 @@ static async Task DoClientWorkAsync(IClusterClient client)
     for (int i = 0; i < messages.Count(); i++)
     {
         var msg = messages[i];
-        var person = client.GetGrain<IPersonGrain>(msg.PersonId);
+        var person = client.GetGrain<IPersonGrain>(msg.PersonGuid);
         var response = await person.JoinGame(msg);
-        Console.WriteLine($"G:{msg.GameGuid},P={msg.PersonId}={response}");
+        Console.WriteLine($"G:{msg.GameGuid},P={msg.PersonGuid}={response}");
     }
 
 

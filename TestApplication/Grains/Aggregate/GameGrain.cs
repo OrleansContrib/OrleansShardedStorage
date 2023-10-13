@@ -34,7 +34,7 @@ namespace Grains.Aggregate
         {
             foreach(var row in joinGameMessages)
             {
-                this._state.State.PeopleInGame.Add(new PersonInGame() { PersonGuid = row.PersonId, Name = row.Name });
+                this._state.State.PeopleInGame.Add(new PersonInGame() { PersonGuid = row.PersonGuid, Name = row.Name });
                 this._state.State.Count = this._state.State.Count + 1;
             }
 

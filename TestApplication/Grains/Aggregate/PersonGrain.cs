@@ -33,7 +33,7 @@ namespace Grains.Aggregate
         async Task<string> IPersonGrain.JoinGame(JoinGameMessage joinGameMessage)
         {
             this._state.State.Name = joinGameMessage.Name;
-            this._state.State.GameIds.Add(joinGameMessage.GameGuid);
+            this._state.State.GameGuids.Add(joinGameMessage.GameGuid);
             await this._state.WriteStateAsync();
 
             var intermediary = this.GrainFactory.GetGrain<IPersonGameIntermediaryGrain>(0);
@@ -48,7 +48,7 @@ namespace Grains.Aggregate
         // The ID for this person is the grain Key
 
         [Id(0)]
-        public List<Guid> GameIds { get; set; } = new List<Guid>();
+        public List<Guid> GameGuids { get; set; } = new List<Guid>();
 
         [Id(1)]
         public string Name { get; set; }
