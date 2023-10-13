@@ -157,5 +157,4 @@ static async Task DoClientWorkAsync(IClusterClient client)
     Console.WriteLine("Press any key to continue");
     Console.ReadLine();
 
-
 }
