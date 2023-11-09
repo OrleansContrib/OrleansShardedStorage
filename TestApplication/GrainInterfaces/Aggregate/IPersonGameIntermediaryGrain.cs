@@ -10,7 +10,7 @@ namespace GrainInterfaces.Aggregate
 {
     public interface IPersonGameIntermediaryGrain : IGrainWithIntegerKey
     {
-        [OneWay]
+        //[OneWay] - Don't make this oneway. We need to know if the message doesn't make it into the system.
         Task AddPersonToGameAsync(JoinGameMessage joinGameMessage);
     }
 }

@@ -9,6 +9,8 @@ namespace GrainInterfaces.Aggregate
 {
     public interface IPersonGrain : Orleans.IGrainWithGuidKey
     {
-        Task<string> JoinGame(JoinGameMessage joinGameMessage);
+        Task<string> ConfirmGameJoined(JoinGameMessage joinGameMessage);
+
+        Task<List<Guid>> GetJoinedGames();
     }
 }

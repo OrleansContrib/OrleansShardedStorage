@@ -30,15 +30,18 @@ namespace Grains.Aggregate
         }
 
 
-        async Task<string> IPersonGrain.JoinGame(JoinGameMessage joinGameMessage)
+        async Task<string> IPersonGrain.ConfirmGameJoined(JoinGameMessage joinGameMessage)
         {
             this._state.State.Name = joinGameMessage.Name;
             this._state.State.GameGuids.Add(joinGameMessage.GameGuid);
             await this._state.WriteStateAsync();
-
-            var intermediary = this.GrainFactory.GetGrain<IPersonGameIntermediaryGrain>(0);
-            await intermediary.AddPersonToGameAsync(joinGameMessage);
             return "OK";
+        }
+
+
+        Task<List<Guid>> IPersonGrain.GetJoinedGames()
+        {
+            return Task.FromResult(this._state.State.GameGuids);
         }
     }
 

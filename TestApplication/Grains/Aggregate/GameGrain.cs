@@ -39,6 +39,9 @@ namespace Grains.Aggregate
             }
 
             await this._state.WriteStateAsync();
+
+            var confirmGrain = this.GrainFactory.GetGrain<IGameConfirmPersonAddedIntermediary>(0);
+            await confirmGrain.NotifyPersonOfGameConfirmationAsync(joinGameMessages);
         }
 
         Task<int> IGameGrain.GetCountOfPeopleInGame()
