@@ -12,6 +12,8 @@ This code will '[shard](https://learn.microsoft.com/en-us/azure/architecture/pat
 
 It can handle Table Storage and Blob Storage.
 
+The test application shows an example of the 'reduce pattern' which can be used with this storage sharding to make something exceedingly powerful.
+
 # How does it work?
 
 `OrleansShardedStorageProvider` will split grain data fairly evenly over a number of table storage accounts to help increase throughput. 
