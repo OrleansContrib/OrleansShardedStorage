@@ -194,7 +194,6 @@ static async Task DoClientWorkAsync(IClusterClient client)
         }
     }
 
-
     Console.ReadLine();
 
 }
