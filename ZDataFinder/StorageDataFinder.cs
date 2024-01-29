@@ -11,15 +11,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
+using System.Collections.Concurrent;
+using Microsoft.Identity.Client;
 
 namespace ZDataFinder
 {
-    internal class BlobManager
+    internal class StorageDataFinder
     {
         private List<TableClient> _tableClients = new List<TableClient>();
         private List<BlobContainerClient> _blobClients = new List<BlobContainerClient>();
 
-        public BlobManager()
+        public StorageDataFinder()
         {
         }
 
@@ -61,38 +63,74 @@ namespace ZDataFinder
         }
 
 
-        public async Task<string> GetStorageAccountFromBlobKeyPart(string dataToFind)
+        public async Task<ConcurrentBag<string>> GetStorageAccountFromBlobKeyPart(string dataToFind, bool exitAtFirstResult)
         {
-            string retVal = "";
+            ConcurrentBag<string> retVal = new ConcurrentBag<string>();
 
-            foreach (var blobClient in this._blobClients)
+            var options = new ParallelOptions()
             {
-                // Call the listing operation and return pages of the specified size.
-                var resultSegment = blobClient.GetBlobsAsync()
-                    .AsPages(default, 1000);
+                MaxDegreeOfParallelism = 20
+            };
 
-                // Enumerate the blobs returned for each page.
-                await foreach (Page<BlobItem> blobPage in resultSegment)
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken token = source.Token;
+
+            try
+            {
+                await Parallel.ForEachAsync(this._blobClients, options, async (blobClient, ct) =>
                 {
-                    foreach (BlobItem blobItem in blobPage.Values)
-                    {
-                        Console.WriteLine("Blob name: {0}", blobItem.Name);
+                    Console.WriteLine($"Checking {blobClient.AccountName}/{blobClient.Name}");
 
-                        if (blobItem.Name.ToLower().Contains(dataToFind))
+                    // Call the listing operation and return pages of the specified size.
+                    var resultSegment = blobClient.GetBlobsAsync()
+                        .AsPages(default, 1000);
+
+                    // Enumerate the blobs returned for each page.
+                    await foreach (Page<BlobItem> blobPage in resultSegment)
+                    {
+                        ct.ThrowIfCancellationRequested();
+
+                        // If we have a result anywhere and we should bounce, bounce.
+                        if (exitAtFirstResult && retVal.Any())
                         {
-                            retVal = blobClient.AccountName;
                             break;
                         }
 
+                        foreach (BlobItem blobItem in blobPage.Values)
+                        {
+                            // TODO: Remove this!
+                            Console.WriteLine("Blob name: {0}", blobItem.Name);
+
+                            if (blobItem.Name.ToLower().Contains(dataToFind))
+                            {
+                                retVal.Add($"{blobClient.AccountName} / {blobItem.Name}");
+
+                                if(exitAtFirstResult)
+                                {
+                                    Console.WriteLine("Found something. Exiting parallel foreach...");
+                                    source.Cancel();
+                                }
+
+                                break;
+                            }
+
+                        }
                     }
-                }
-
-                if (!String.IsNullOrWhiteSpace(retVal))
-                {
-                    break;
-                }
-
+                });
             }
+            catch (OperationCanceledException ex)
+            {
+                // ... (the cts was cancelled)
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+
+
+
+
 
             return retVal;
         }
