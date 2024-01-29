@@ -86,6 +86,8 @@ static async Task DoClientWorkAsync(IClusterClient client)
 
     if (key == ConsoleKey.Y)
     {
+        Console.WriteLine("Start Test");
+
         // Create a list of 100 people. Create 2 games.
         // Add 100 people to each game
         // See how long it takes to send the messages and for them to settle (i.e. be counted in the game).
@@ -192,6 +194,10 @@ static async Task DoClientWorkAsync(IClusterClient client)
             }
 
         }
+    }
+    else
+    {
+        Console.WriteLine("Key not 'Y', so exited. Press enter again to exit the console.");
     }
 
     Console.ReadLine();
