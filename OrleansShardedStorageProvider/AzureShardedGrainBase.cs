@@ -18,7 +18,7 @@ namespace OrleansShardedStorageProvider
             _options = options;
         }
 
-        protected int GetShardNumberFromKey(string pk)
+        public int GetShardNumberFromKey(string pk)
         {
             var hash = GetStableHashCode(pk);
             var storageNum = Math.Abs(hash % this._options.ConnectionStrings.Count());
@@ -51,7 +51,12 @@ namespace OrleansShardedStorageProvider
         }
 
 
-        private const string KeyStringSeparator = "__";
+        protected const string KeyStringSeparator = "__";
+
+        public string GetKeyStringSeparator() 
+        { 
+            return KeyStringSeparator; 
+        }
 
         protected string GetKeyString(GrainId grainId)
         {

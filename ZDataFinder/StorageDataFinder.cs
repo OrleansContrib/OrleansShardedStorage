@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs.Models;
 using System.Collections.Concurrent;
 using Microsoft.Identity.Client;
+using System.Xml;
 
 namespace ZDataFinder
 {
@@ -105,7 +106,7 @@ namespace ZDataFinder
                             {
                                 retVal.Add($"{blobClient.AccountName} / {blobItem.Name}");
 
-                                if(exitAtFirstResult)
+                                if (exitAtFirstResult)
                                 {
                                     Console.WriteLine("Found something. Exiting parallel foreach...");
                                     source.Cancel();
@@ -122,15 +123,10 @@ namespace ZDataFinder
             {
                 // ... (the cts was cancelled)
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
-
-
-
-
-
 
             return retVal;
         }

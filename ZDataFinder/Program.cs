@@ -41,6 +41,32 @@ options.ConnectionStrings = tableGrainStores;
 options.ConnectionStrings.AddRange(blobGrainStores);
 
 
+
+var serviceId = "OrleansBasics";
+var grainName = "smalldata";
+var grainId = "1F";
+AzureShardedGrainBase agb = new AzureShardedGrainBase(serviceId, options);
+
+var key = $"{serviceId}{agb.GetKeyStringSeparator()}{grainName}_{grainId}";
+var storageNumberFromKey = agb.GetShardNumberFromKey(key);
+Console.WriteLine($"storage location from key = {storageNumberFromKey}");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 StorageDataFinder finder = new StorageDataFinder();
 await finder.Init(options);
 
@@ -49,7 +75,7 @@ var input = "";
 
 do
 {
-    Console.WriteLine("Enter the guid you wish to find the data location of");
+    Console.WriteLine("Enter the all (or part of) the guid you wish to find the data location of");
     input = Console.ReadLine();
 }
 while (String.IsNullOrWhiteSpace(input));
