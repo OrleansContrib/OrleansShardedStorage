@@ -58,12 +58,11 @@ namespace OrleansShardedStorageProvider
             Action<OptionsBuilder<AzureShardedStorageOptions>> configureOptions = null)
         {
             configureOptions?.Invoke(services.AddOptions<AzureShardedStorageOptions>(name));
-            //services.AddTransient<IConfigurationValidator>(sp => new AzureShardedStorageOptions(sp.GetRequiredService<IOptionsMonitor<AzureShardedStorageOptions>>().Get(name), name));
-            //services.AddTransient<IPostConfigureOptions<AzureShardedStorageOptions>, DefaultStorageProviderSerializerOptionsConfigurator<AzureShardedStorageOptions>>();
+           
             services.ConfigureNamedOptionForLogging<AzureShardedStorageOptions>(name);
             if (string.Equals(name, ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, StringComparison.Ordinal))
             {
-                services.TryAddSingleton(sp => sp.GetServiceByName<IGrainStorage>(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME));
+                services.TryAddSingleton(sp => sp.GetKeyedServices<IGrainStorage>(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME));
             }
             return services.AddSingletonNamedService<IGrainStorage>(name, AzureShardedGrainStorageFactory.Create)
                            .AddSingletonNamedService<ILifecycleParticipant<ISiloLifecycle>>(name, (s, n) => (ILifecycleParticipant<ISiloLifecycle>)s.GetRequiredServiceByName<IGrainStorage>(n));
