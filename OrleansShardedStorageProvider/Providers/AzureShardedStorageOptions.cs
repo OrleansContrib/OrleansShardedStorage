@@ -4,7 +4,7 @@ using OrleansShardedStorageProvider.Models;
 namespace OrleansShardedStorageProvider.Providers
 {
 	/// <summary>
-	/// Redis grain storage options.
+	/// AzureShardedStorage grain storage options.
 	/// </summary>
 	public class AzureShardedStorageOptions : IStorageProviderSerializerOptions
 	{

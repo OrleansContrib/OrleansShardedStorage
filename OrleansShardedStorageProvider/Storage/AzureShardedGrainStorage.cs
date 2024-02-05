@@ -26,7 +26,7 @@ namespace OrleansShardedStorageProvider.Storage
 		private StorageType _storageType = StorageType.TableStorage;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="RedisGrainStorage"/> type.
+		/// Creates a new instance of the <see cref="AzureShardedStorage"/> type.
 		/// </summary>
 		public AzureShardedGrainStorage(
 			string name,

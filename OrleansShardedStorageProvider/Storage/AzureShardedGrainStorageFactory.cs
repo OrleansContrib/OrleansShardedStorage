@@ -6,7 +6,7 @@ namespace OrleansShardedStorageProvider.Storage
 {
 
 	/// <summary>
-	/// Factory used to create instances of Redis grain storage.
+	/// Factory used to create instances of AzureShardedStorage
 	/// </summary>
 	public static class AzureShardedGrainStorageFactory
 	{
