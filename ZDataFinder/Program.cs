@@ -1,6 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Orleans.Configuration;
 using OrleansShardedStorageProvider;
+using OrleansShardedStorageProvider.Models;
+using OrleansShardedStorageProvider.Providers;
+using OrleansShardedStorageProvider.Storage;
 using System.Diagnostics;
 using ZDataFinder;
 using ZDataFinder.Config;
@@ -45,7 +50,14 @@ options.ConnectionStrings.AddRange(blobGrainStores);
 var serviceId = "OrleansBasics";
 var grainName = "smalldata";
 var grainId = "1F";
-AzureShardedGrainBase agb = new AzureShardedGrainBase(serviceId, options);
+
+
+ClusterOptions cSettings = new ClusterOptions();
+cSettings.ServiceId = serviceId;
+IOptions<ClusterOptions> cOpts = Options.Create(cSettings);
+
+
+AzureShardedGrainStorageBase agb = new AzureShardedGrainStorageBase(cOpts, options);
 
 var key = $"{serviceId}{agb.GetKeyStringSeparator()}{grainName}_{grainId}";
 var storageNumberFromKey = agb.GetShardNumberFromKey(key);
