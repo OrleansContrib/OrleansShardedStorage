@@ -16,6 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\OrleansShardedStorageProvider2\OrleansShardedStorageProvider2.csproj" />
 		<ProjectReference Include="..\..\OrleansShardedStorageProvider\OrleansShardedStorageProvider.csproj" />
 		<ProjectReference Include="..\Grains\Grains.csproj" />
 	</ItemGroup>

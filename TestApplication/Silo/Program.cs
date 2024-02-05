@@ -4,7 +4,10 @@ using Microsoft.Extensions.Logging;
 using Orleans.Configuration;
 
 using Orleans.Runtime;
-using OrleansShardedStorageProvider;
+
+using OrleansShardedStorageProvider.Models;
+using OrleansShardedStorageProvider.Providers;
+using OrleansShardedStorageProvider.Hosting;
 using Silo.Config;
 
 try
@@ -60,11 +63,11 @@ static async Task<IHost> StartSiloAsync()
         .UseOrleans(c =>
         {
             c.UseLocalhostClustering()
-            .AddAzureShardedGrainStorage("ShardedTableStorageStore", opt =>
+            .AddShardedGrainStorage("ShardedTableStorageStore", opt =>
             {
                 opt.ConnectionStrings = tableGrainStores;
             })
-            .AddAzureShardedGrainStorage("ShardedBlobStorageStore", opt =>
+            .AddShardedGrainStorage("ShardedBlobStorageStore", opt =>
             {
                 opt.ConnectionStrings = blobGrainStores;
             })
