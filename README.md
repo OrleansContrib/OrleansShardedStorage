@@ -1,8 +1,20 @@
 # Orleans Sharded Storage Provider (TABLES AND BLOBS) 
 
-This is for Orleans 7+. See here for the deprecated [3.6.2 version](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-3.6.2).
+This is for Orleans 8+. 
+
+- See here for the deprecated [Version 7](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-7)
+- See here for the deprecated [3.6.2 version](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-3.6.2).
+
+
 
 ---
+
+# Upgrading from Version 7 to Version 8
+
+Due to issues upgrading, I've changed this to match the pattern used by the [Orleans Project](https://github.com/dotnet/orleans/tree/main/src/Redis/Orleans.Persistence.Redis) itself.
+
+This has added some additional namespace resolution requirements. Just right click the classes and select the appropriate namespace to resolve them. 
+
 
 # What is it?
 

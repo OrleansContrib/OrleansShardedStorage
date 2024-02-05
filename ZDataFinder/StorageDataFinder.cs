@@ -14,6 +14,8 @@ using Azure.Storage.Blobs.Models;
 using System.Collections.Concurrent;
 using Microsoft.Identity.Client;
 using System.Xml;
+using OrleansShardedStorageProvider.Providers;
+using OrleansShardedStorageProvider.Models;
 
 namespace ZDataFinder
 {
