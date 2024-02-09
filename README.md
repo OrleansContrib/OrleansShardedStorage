@@ -53,9 +53,9 @@ Each Provider must be of one type. i.e. You can have many Table Storage Provider
 ## How to Set up the Test Application
 
 
-This repo consists of the main `OrleansShardedStorageProvider` class library and a `TestApplication` (4 projects: Silo, Client, Grains, GrainInterfaces) to show how to use it. 
+This repo consists of the main `OrleansShardedStorageProvider` class library and a Test Application (4 projects: Silo, Client, Grains, GrainInterfaces) to show how to use it. 
 
-It is not yet deployed as a NuGet Package.
+It is not deployed as a NuGet Package.
 
 To run the test application:
 
@@ -63,7 +63,7 @@ To run the test application:
 
 2. To get up and running, you will need to create a few Storage Accounts in Azure. You can do this in the Azure Portal or using the provided script. `OrleansShardedStorageProvider\create-multiple-storage-accounts.ps1` will create 6 storage accounts and output a list you can put in the sample app config. You will need to update some info at the top of this script to get it to work. If it creates the resource group, the output seems to stick, so wait 5 mins and it should be done.
 
-3. In `TestApplication\Silo`, update `appsettings.json`. Add 3 names/sastoken pairs to `TableStorageAccounts` and 3 to `BlobStorageAccounts`. (Note: You could use appsettings as a template and update `secrets.json`) The final config will look something like:
+3. In `TestApplication\Silo`, copy `Config\sample-appsettings.json` to `secrets.json`. Add 3 names/sastoken pairs to `TableStorageAccounts` and 3 to `BlobStorageAccounts`. The final config will look something like:
 
 ```
 {
@@ -109,7 +109,8 @@ To run the test application:
 
 5. Run `TestApplication\Client\Client.csproj`
 
->NOTE: The client will be slow because it's running in debug and I haven't multi-threaded it for ease for understanding.
+>NOTE: The client will be slow because it's running in debug.
+>NOTE2: The Test client is single threaded for ease of understanding.
 
 6. The client will call/create 100 grains that save to table storage and 100 that save to blob storage. If you view your storage accounts in `Microsoft Azure Storage Explorer` (or equivalent), you will see the data has been split across multiple accounts.
 
@@ -119,7 +120,7 @@ To run the test application:
 
 >NOTE: Running in Visual Studio in debug is slow. To run at full speed you need to be in Release and run the exe's outside VS.
 
-8: (Just a note) If you want it distriubted, include a reference to `Microsoft.Orleans.Clustering.AzureStorage` and employ this on the client and silo:
+8: (Just a note) If you want distriubted silos, include a reference to `Microsoft.Orleans.Clustering.AzureStorage` and employ this on the client and silo:
 
 ```
             var clusterTableStorageUri =
