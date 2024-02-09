@@ -63,11 +63,11 @@ static async Task<IHost> StartSiloAsync()
         .UseOrleans(c =>
         {
             c.UseLocalhostClustering()
-            .AddShardedGrainStorage("ShardedTableStorageStore", opt =>
+            .AddAzureShardedGrainStorage("ShardedTableStorageStore", opt =>
             {
                 opt.ConnectionStrings = tableGrainStores;
             })
-            .AddShardedGrainStorage("ShardedBlobStorageStore", opt =>
+            .AddAzureShardedGrainStorage("ShardedBlobStorageStore", opt =>
             {
                 opt.ConnectionStrings = blobGrainStores;
             })

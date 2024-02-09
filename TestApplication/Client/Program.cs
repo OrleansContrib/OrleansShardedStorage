@@ -171,7 +171,7 @@ static async Task DoClientWorkAsync(IClusterClient client)
 		Console.WriteLine($"ALL {games.Count()} games, with {people.Count()} people each ready in {st.ElapsedMilliseconds}", ConsoleColor.Green);
 		Console.WriteLine();
 		Console.WriteLine("Print the joins confirmed to people? (Y/N)");
-
+		Console.WriteLine();
 		//Note: This person/game stuff is all eventually consistent, so if you were quick pressing Y, there could be some missing confirmations (unlikely if you added a small number)
 
 		key = Console.ReadKey().Key;
@@ -189,28 +189,37 @@ static async Task DoClientWorkAsync(IClusterClient client)
 
 				List<Guid> gamesJoined = new List<Guid>();
 				int tryCount = 0;
+				int maxTryCount = 10;
 				do
 				{
 					// NOTE: Because we're eventually consistent in getting the confirmations back to the
 					//		 people in the game, we might need to check the person grain a few times until it's been properly updated.
 					gamesJoined = await personGrain.GetJoinedGames();
-					if(gamesJoined.Count() == games.Count())
+					var gamesString = String.Join(",", gamesJoined);
+
+					if (gamesJoined.Count() == games.Count())
 					{
-						tryCount = 5;
+						tryCount = maxTryCount;
+						Console.WriteLine($"P={p},Games={gamesString}");
 					}
 					else
 					{
-						if(tryCount == 4) errorCount++;
-
-						tryCount++;
-						await Task.Delay(200);
+						if(tryCount == (maxTryCount -1))
+						{
+							errorCount++;
+							Console.WriteLine($"P={p} - didn't achieve consistency,Games={gamesString}", ConsoleColor.Red);
+							tryCount++;
+						}
+						else
+						{
+							Console.WriteLine($"P={p} - retry - waiting for consistency.");
+							tryCount++;
+							await Task.Delay(1000);
+						}
 					}
-
 				}
-				while (tryCount < 5);
+				while (tryCount < maxTryCount);
 
-				var gamesString = String.Join(",", gamesJoined);
-				Console.WriteLine($"P={p},Games={gamesString}");
 			}
 
 			Console.WriteLine($"There were {errorCount} errors");

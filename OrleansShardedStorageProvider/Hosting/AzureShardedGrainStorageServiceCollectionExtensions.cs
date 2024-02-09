@@ -19,31 +19,31 @@ namespace OrleansShardedStorageProvider.Hosting
 		/// <summary>
 		/// Configures Sharded as the default grain storage provider.
 		/// </summary>
-		public static IServiceCollection AddShardedGrainStorageAsDefault(this IServiceCollection services, Action<AzureShardedStorageOptions> configureOptions)
+		public static IServiceCollection AddAzureShardedGrainStorageAsDefault(this IServiceCollection services, Action<AzureShardedStorageOptions> configureOptions)
 		{
-			return services.AddShardedGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, ob => ob.Configure(configureOptions));
+			return services.AddAzureShardedGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, ob => ob.Configure(configureOptions));
 		}
 
 		/// <summary>
 		/// Configures Sharded as a grain storage provider.
 		/// </summary>
-		public static IServiceCollection AddShardedGrainStorage(this IServiceCollection services, string name, Action<AzureShardedStorageOptions> configureOptions)
+		public static IServiceCollection AddAzureShardedGrainStorage(this IServiceCollection services, string name, Action<AzureShardedStorageOptions> configureOptions)
 		{
-			return services.AddShardedGrainStorage(name, ob => ob.Configure(configureOptions));
+			return services.AddAzureShardedGrainStorage(name, ob => ob.Configure(configureOptions));
 		}
 
 		/// <summary>
 		/// Configures Sharded as the default grain storage provider.
 		/// </summary>
-		public static IServiceCollection AddShardedGrainStorageAsDefault(this IServiceCollection services, Action<OptionsBuilder<AzureShardedStorageOptions>> configureOptions = null)
+		public static IServiceCollection AddAzureShardedGrainStorageAsDefault(this IServiceCollection services, Action<OptionsBuilder<AzureShardedStorageOptions>> configureOptions = null)
 		{
-			return services.AddShardedGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, configureOptions);
+			return services.AddAzureShardedGrainStorage(ProviderConstants.DEFAULT_STORAGE_PROVIDER_NAME, configureOptions);
 		}
 
 		/// <summary>
 		/// Configures Sharded as a grain storage provider.
 		/// </summary>
-		public static IServiceCollection AddShardedGrainStorage(this IServiceCollection services, string name,
+		public static IServiceCollection AddAzureShardedGrainStorage(this IServiceCollection services, string name,
 			Action<OptionsBuilder<AzureShardedStorageOptions>> configureOptions = null)
 		{
 			configureOptions?.Invoke(services.AddOptions<AzureShardedStorageOptions>(name));
