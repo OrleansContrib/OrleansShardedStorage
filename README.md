@@ -49,6 +49,52 @@ Each Provider must be of one type. i.e. You can have many Table Storage Provider
 ----
 ----
 
+## Example Load Test Results
+
+Remember many factors such as machines, network, storage types and more can affect performance.
+
+Running `ClientLoadTest` and `Silo`.
+
+Using Standard D8s v5 VM (8vCPU's, 32Gib RAM)
+
+5 Silo's, localhost cluster. 
+
+Grains warmed up for clarity as to the actual fastest save time. To call the grains without any save would take 100K -> 528ms on this setup (189K/s).
+
+Values in milliseconds. 
+
+### 1 Standard Storage Account
+
+| Size    | Save to Blob |
+| -------- | ------- |
+| 100K  | 12986   |
+
+Struggles around 100K
+
+### 2 Standard Storage Accounts
+
+| Size    | Save to Blob |
+| -------- | ------- |
+| 100K  |  4848   |
+
+Slows around 150K
+
+### 1 Premium Storage Account (Block Blobs)
+
+| Size    | Save to Blob |
+| -------- | ------- |
+| 100K  | 5824  |
+
+Note this is significantly faster than standard storage.
+
+### 2 Premium Storage Accounts (Block Blobs)
+
+| Size    | Save to Blob |
+| -------- | ------- |
+| 100K  | 4877  |
+
+*Reached over 300K without complaints.
+
 
 ## How to Set up the Test Application
 

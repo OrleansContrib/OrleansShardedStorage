@@ -29,8 +29,12 @@ namespace Grains.Aggregate
             return base.OnActivateAsync(cancellationToken);
         }
 
+		Task IPersonGrain.WarmUp()
+		{
+            return Task.CompletedTask;
+		}
 
-        async Task<string> IPersonGrain.ConfirmGameJoined(JoinGameMessage joinGameMessage)
+		async Task<string> IPersonGrain.ConfirmGameJoined(JoinGameMessage joinGameMessage)
         {
             this._state.State.Name = joinGameMessage.Name;
             this._state.State.GameGuids.Add(joinGameMessage.GameGuid);

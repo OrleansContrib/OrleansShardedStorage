@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "TestApplicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZDataFinder", "ZDataFinder\ZDataFinder.csproj", "{472CC87D-88D3-4B87-861C-98303964306C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientLoadTest", "TestApplication\ClientLoadTest\ClientLoadTest.csproj", "{A50A0A45-0739-498D-8140-F272A178D1F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{472CC87D-88D3-4B87-861C-98303964306C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{472CC87D-88D3-4B87-861C-98303964306C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{472CC87D-88D3-4B87-861C-98303964306C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A50A0A45-0739-498D-8140-F272A178D1F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A50A0A45-0739-498D-8140-F272A178D1F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A50A0A45-0739-498D-8140-F272A178D1F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A50A0A45-0739-498D-8140-F272A178D1F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{62FEC839-F350-4F24-921B-AA18BC516013} = {DCD6C532-ADC2-4A49-A7DF-2D559934912C}
 		{EE88F5E1-EEFE-4D80-97B7-EA6E5DF36908} = {139B6E56-2FD9-4313-BC10-BF974F391AF0}
 		{472CC87D-88D3-4B87-861C-98303964306C} = {139B6E56-2FD9-4313-BC10-BF974F391AF0}
+		{A50A0A45-0739-498D-8140-F272A178D1F9} = {139B6E56-2FD9-4313-BC10-BF974F391AF0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B78AD82C-DEA2-4C5F-AF2C-1D9F3CABEE3D}
