@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "TestApplicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZDataFinder", "ZDataFinder\ZDataFinder.csproj", "{472CC87D-88D3-4B87-861C-98303964306C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrleansShardedStorageProvider2", "OrleansShardedStorageProvider2\OrleansShardedStorageProvider2.csproj", "{9BE04697-080C-494D-9015-A70AB0A01F9C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,10 +55,6 @@ Global
 		{472CC87D-88D3-4B87-861C-98303964306C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{472CC87D-88D3-4B87-861C-98303964306C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{472CC87D-88D3-4B87-861C-98303964306C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9BE04697-080C-494D-9015-A70AB0A01F9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BE04697-080C-494D-9015-A70AB0A01F9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BE04697-080C-494D-9015-A70AB0A01F9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BE04697-080C-494D-9015-A70AB0A01F9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,7 +67,6 @@ Global
 		{62FEC839-F350-4F24-921B-AA18BC516013} = {DCD6C532-ADC2-4A49-A7DF-2D559934912C}
 		{EE88F5E1-EEFE-4D80-97B7-EA6E5DF36908} = {139B6E56-2FD9-4313-BC10-BF974F391AF0}
 		{472CC87D-88D3-4B87-861C-98303964306C} = {139B6E56-2FD9-4313-BC10-BF974F391AF0}
-		{9BE04697-080C-494D-9015-A70AB0A01F9C} = {DCD6C532-ADC2-4A49-A7DF-2D559934912C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B78AD82C-DEA2-4C5F-AF2C-1D9F3CABEE3D}
