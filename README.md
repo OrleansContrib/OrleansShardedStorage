@@ -71,14 +71,6 @@ Values in milliseconds.
 
 Struggles around 100K
 
-### 2 Standard Storage Accounts
-
-| Size    | Save to Blob |
-| -------- | ------- |
-| 100K  |  4848   |
-
-Slows around 150K
-
 ### 1 Premium Storage Account (Block Blobs)
 
 | Size    | Save to Blob |
@@ -87,13 +79,22 @@ Slows around 150K
 
 Note this is significantly faster than standard storage.
 
+### 2 Standard Storage Accounts
+
+| Size    | Save to Blob |
+| -------- | ------- |
+| 100K  |  4848   |
+
+Slows around 150K
+
+
 ### 2 Premium Storage Accounts (Block Blobs)
 
 | Size    | Save to Blob |
 | -------- | ------- |
 | 100K  | 4877  |
 
-*Reached over 300K without complaints.
+*This was often not much quicker than standard at 100K, but reached over 300K (under 20s) without complaints, where standard storage was creaking around 150K.
 
 
 ## How to Set up the Test Application
