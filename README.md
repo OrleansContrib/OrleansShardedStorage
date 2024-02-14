@@ -3,7 +3,6 @@
 This is for Orleans 8+. 
 
 - See here for the deprecated [Version 7](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-7)
-- See here for the deprecated [3.6.2 version](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-3.6.2).
 
 
 
