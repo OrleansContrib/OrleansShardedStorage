@@ -253,6 +253,12 @@ public class SmallDataGrain : Orleans.Grain, ISmallDataGrain
 
 6. END
 
+## To Run Performance Tests
+
+1. Run the silo, as set up above.
+2. Run `ClientLoadTest`.
+3. Enter the number of grains you want to create and hit enter. The console will run the test and report back timings.
+
 
 ## To Run the Unit Tests
 
