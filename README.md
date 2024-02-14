@@ -24,7 +24,7 @@ This code will '[shard](https://learn.microsoft.com/en-us/azure/architecture/pat
 
 It can handle Table Storage and Blob Storage.
 
-The test application shows an example of the 'reduce pattern' which can be used with this storage sharding to make something exceedingly powerful.
+One of the test applications shows an example of the 'reduce pattern' which can be used with this storage sharding to make something exceedingly powerful.
 
 # How does it work?
 
@@ -52,6 +52,8 @@ Each Provider must be of one type. i.e. You can have many Table Storage Provider
 ## Example Load Test Results
 
 Remember many factors such as machines, network, storage types and more can affect performance.
+
+This test only looks at 2 storage accounts, but you could use many more.
 
 Running `ClientLoadTest` and `Silo`.
 
