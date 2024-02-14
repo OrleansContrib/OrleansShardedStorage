@@ -97,6 +97,8 @@ Slows around 150K
 
 *This was often not much quicker than standard at 100K, but reached over 300K (under 20s) without complaints, where standard storage was creaking around 150K.
 
+----
+----
 
 ## How to Set up the Test Application
 
