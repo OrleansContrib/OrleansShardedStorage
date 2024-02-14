@@ -49,7 +49,7 @@ Each Provider must be of one type. i.e. You can have many Table Storage Provider
 ----
 ----
 
-## Example Load Test Results
+## Example Load Test Results Summary
 
 Remember many factors such as machines, network, storage types and more can affect performance.
 
