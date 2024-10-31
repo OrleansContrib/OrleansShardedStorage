@@ -24,7 +24,7 @@ namespace OrleansShardedStorageProvider.Storage
 		private List<TableClient> _tableClients = new List<TableClient>();
 		private List<BlobContainerClient> _blobClients = new List<BlobContainerClient>();
 		private StorageType _storageType = StorageType.TableStorage;
-		private int _defaultTimeoutTime = 20000; // 20s - Less than Orleans Grain 30s DEFAULT_ACTIVATION_TIMEOUT
+		private int _defaultTimeoutTime = 25000; // 25s - Less than Orleans Grain 30s DEFAULT_ACTIVATION_TIMEOUT
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="AzureShardedStorage"/> type.
