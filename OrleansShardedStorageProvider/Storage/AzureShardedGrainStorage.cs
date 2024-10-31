@@ -24,6 +24,7 @@ namespace OrleansShardedStorageProvider.Storage
 		private List<TableClient> _tableClients = new List<TableClient>();
 		private List<BlobContainerClient> _blobClients = new List<BlobContainerClient>();
 		private StorageType _storageType = StorageType.TableStorage;
+		private int _defaultTimeoutTime = 20000; // 20s - Less than Orleans Grain 30s DEFAULT_ACTIVATION_TIMEOUT
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="AzureShardedStorage"/> type.
@@ -169,8 +170,9 @@ namespace OrleansShardedStorageProvider.Storage
 					//       See discussion here - https://github.com/Azure/azure-sdk-for-net/issues/16251
 					//       and Orleans Code here - {orleans}\src\Azure\Shared\Storage\AzureTableDataManager.cs Method ReadSingleTableEntryAsync
 					//       This is quicker than Query once a row is there, so what we lose to start, we more than gain in speed later. Don't change it!
-					var res = await _tableClients[connectionIndex].GetEntityAsync<TableEntity>(pk, rowKey);
 
+					var cts = new CancellationTokenSource(_defaultTimeoutTime);
+					var res = await _tableClients[connectionIndex].GetEntityAsync<TableEntity>(pk, rowKey, null, cts.Token);
 					if (res != null)
 					{
 						var stringData = res.Value["StringData"].ToString();
@@ -201,11 +203,13 @@ namespace OrleansShardedStorageProvider.Storage
 					var containerClient = _blobClients[connectionIndex];
 					BlobClient blobClient = containerClient.GetBlobClient(key);
 
-					var exists = await blobClient.ExistsAsync();
+					var cts = new CancellationTokenSource(_defaultTimeoutTime);
+					var exists = await blobClient.ExistsAsync(cts.Token);
 
 					if (exists)
 					{
-						var download = await blobClient.DownloadContentAsync();
+						var cts2 = new CancellationTokenSource(_defaultTimeoutTime);
+						var download = await blobClient.DownloadContentAsync(cts2.Token);
 						BinaryData binData = download.Value.Content;
 
 						//var bytes = binData.ToArray();
