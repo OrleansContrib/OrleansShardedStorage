@@ -172,7 +172,7 @@ namespace OrleansShardedStorageProvider.Storage
 					//       This is quicker than Query once a row is there, so what we lose to start, we more than gain in speed later. Don't change it!
 
 					var cts = new CancellationTokenSource(_defaultTimeoutTime);
-					var res = await _tableClients[connectionIndex].GetEntityAsync<TableEntity>(pk, rowKey, null, cts.Token);
+					var res = await _tableClients[connectionIndex].GetEntityAsync<TableEntity>(pk, rowKey, cancellationToken: cts.Token);
 					if (res != null)
 					{
 						var stringData = res.Value["StringData"].ToString();
