@@ -360,7 +360,8 @@ namespace OrleansShardedStorageProvider.Storage
 		/// <inheritdoc />
 		public async Task ClearStateAsync<T>(string grainType, GrainId grainId, IGrainState<T> grainState)
 		{
-			if (this._tableClients == null || !this._tableClients.Any()) throw new ArgumentException("GrainState collection not initialized.");
+			if (this._storageType == StorageType.TableStorage && (this._tableClients == null || !this._tableClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
+			if (this._storageType == StorageType.BlobStorage && (this._blobClients == null || !this._blobClients.Any())) throw new ArgumentException("GrainState collection not initialized.");
 			int exConfigIdx = -1;
 
 			try
@@ -381,7 +382,7 @@ namespace OrleansShardedStorageProvider.Storage
 				}
 				else if (this._storageType == StorageType.BlobStorage)
 				{
-					var key = pk + rowKey;
+					var key = pk + "_" + rowKey;
 					var containerClient = _blobClients[connectionIndex];
 					BlobClient blobClient = containerClient.GetBlobClient(key);
 					await blobClient.DeleteIfExistsAsync();
@@ -391,7 +392,7 @@ namespace OrleansShardedStorageProvider.Storage
 					throw new NotImplementedException("type not implemented for read");
 				}
 
-
+				grainState.RecordExists = false;
 			}
 			catch (Exception exc)
 			{
