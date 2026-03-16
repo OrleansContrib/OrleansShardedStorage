@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Orleans.Configuration;
@@ -79,6 +80,12 @@ static async Task<IHost> StartSiloAsync()
             {
                 options.ClusterId = "dev";
                 options.ServiceId = "OrleansBasics";
+            })
+            .ConfigureServices(services =>
+            {
+                // Explicitly use RandomPlacement (Orleans v8 default) to ensure consistent
+                // behavior if upgrading to Orleans v9, which changed the default to ResourceOptimizedPlacement.
+                services.AddSingleton<PlacementStrategy>(new RandomPlacement());
             })
             .ConfigureLogging(
                 logging => logging.AddConsole().SetMinimumLevel(LogLevel.Information)
