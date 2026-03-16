@@ -1,6 +1,6 @@
 # Orleans Sharded Storage Provider (TABLES AND BLOBS) 
 
-This is for Orleans 8+. 
+This is for Orleans 10+. 
 
 - See here for the deprecated [Version 7](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-7)
 

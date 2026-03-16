@@ -50,6 +50,7 @@ namespace Grains.Aggregate
     }
 
 
+    [GenerateSerializer]
     public class PersonGrainState
     {
         // The ID for this person is the grain Key
