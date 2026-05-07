@@ -2,6 +2,7 @@
 
 This is for Orleans 10+. 
 
+- See here for the deprecated [Version 8](https://github.com/OrleansContrib/OrleansShardedStorage/releases/tag/v8.0.0.0002)
 - See here for the deprecated [Version 7](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-7)
 
 
