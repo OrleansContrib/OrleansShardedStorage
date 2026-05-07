@@ -273,4 +273,28 @@ public class SmallDataGrain : Orleans.Grain, ISmallDataGrain
 
 > These are only really testing Orleans. The Grain ID is critical to this project working. If that were to ever change the way it generates, this project would need updating in order to upgrade. Guids and Int's are reformatted by Orleans and are not just converted to strings.
 >
+
+
+------------
+Upgrade Test Notes (net8->net10)
+
+warmup/saves (ms)
+
+net8 5 silo
+9421/9322
+10481/5542
+8289/5844
+7564/5187
+
+.net 10 hosting bundle install
+net8 5 silo net10 client
+9297/6561
+9211/6382
+
+.net 10 5 silo
+11407/6380
+6491/5463
+6272/5321
+
+
 > 
