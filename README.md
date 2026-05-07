@@ -1,6 +1,6 @@
 # Orleans Sharded Storage Provider (TABLES AND BLOBS) 
 
-This is for Orleans 8+. 
+This is for Orleans 10+. 
 
 - See here for the deprecated [Version 7](https://github.com/JsAndDotNet/OrleansShardedStorage/tree/Orleans-7)
 
@@ -8,7 +8,7 @@ This is for Orleans 8+.
 
 ---
 
-# Upgrading from Version 7 to Version 8
+# Upgrading from Version 7 to Version 8+
 
 Due to issues upgrading, I've changed this to match the pattern used by the [Orleans Project](https://github.com/dotnet/orleans/tree/main/src/Redis/Orleans.Persistence.Redis) itself.
 
@@ -273,4 +273,30 @@ public class SmallDataGrain : Orleans.Grain, ISmallDataGrain
 
 > These are only really testing Orleans. The Grain ID is critical to this project working. If that were to ever change the way it generates, this project would need updating in order to upgrade. Guids and Int's are reformatted by Orleans and are not just converted to strings.
 >
+
+
+------------
+Upgrade Test Notes (net8->net10, same VM as before)
+
+warmup/saves (ms)
+
+net8 5 silo
+9421/9322
+10481/5542
+8289/5844
+7564/5187
+
+.net 10 hosting bundle install
+net8 5 silo net10 client
+9297/6561
+9211/6382
+
+.net 10 5 silo
+11413/5727
+6274/8124
+6597/5584
+6049/5180
+6519/5331
+
+
 > 

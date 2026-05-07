@@ -2,7 +2,6 @@
 using GrainInterfaces.Models;
 using Microsoft.Extensions.Logging;
 using Orleans.Concurrency;
-using OrleansCodeGen.Orleans.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Grains.Aggregate
     [StatelessWorker]
     public class PersonGameIntermediaryGrain : Grain, IPersonGameIntermediaryGrain
     {
-        private IDisposable? _timer;
+        private IGrainTimer? _timer;
         private Queue<JoinGameMessage> _queue = new Queue<JoinGameMessage>();
         private bool _isTimerRunning;
         private readonly ILogger<PersonGameIntermediaryGrain> _logger;
@@ -30,7 +29,12 @@ namespace Grains.Aggregate
         {
             // Note: You can play with shortening the intermediary time if you want to speed things up, but that causes extra traffic
             // so you have to weigh up the pros and the cons.
-            _timer = RegisterTimer(AddPeopleToGames, null, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100));
+            _timer = this.RegisterGrainTimer(AddPeopleToGames, new GrainTimerCreationOptions
+            {
+                DueTime = TimeSpan.FromMilliseconds(100),
+                Period = TimeSpan.FromMilliseconds(100),
+                Interleave = true
+            });
             return base.OnActivateAsync(cancellationToken);
         }
 
@@ -51,9 +55,9 @@ namespace Grains.Aggregate
         }
 
 
-        private async Task AddPeopleToGames(object e)
+        private async Task AddPeopleToGames(CancellationToken cancellationToken)
         {
-            if(!this._queue.Any() || _isTimerRunning)
+            if(!this._queue.Any() || _isTimerRunning || cancellationToken.IsCancellationRequested)
             {
                 return;
             }
@@ -67,6 +71,7 @@ namespace Grains.Aggregate
 
             foreach(var gameGuid in gameGuids)
             {
+                if (cancellationToken.IsCancellationRequested) break;
                 var grain = this.GrainFactory.GetGrain<IGameGrain>(gameGuid);
                 var messagesForGrain = allMessages.Where(_ => _.GameGuid == gameGuid).ToList();
                 await grain.AddPeopleToGameAsync(messagesForGrain);
