@@ -276,7 +276,7 @@ public class SmallDataGrain : Orleans.Grain, ISmallDataGrain
 
 
 ------------
-Upgrade Test Notes (net8->net10)
+Upgrade Test Notes (net8->net10, same VM as before)
 
 warmup/saves (ms)
 
