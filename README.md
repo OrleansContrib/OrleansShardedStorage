@@ -8,7 +8,7 @@ This is for Orleans 10+.
 
 ---
 
-# Upgrading from Version 7 to Version 8
+# Upgrading from Version 7 to Version 8+
 
 Due to issues upgrading, I've changed this to match the pattern used by the [Orleans Project](https://github.com/dotnet/orleans/tree/main/src/Redis/Orleans.Persistence.Redis) itself.
 
