@@ -81,6 +81,10 @@ static async Task<IHost> StartSiloAsync()
                 options.ClusterId = "dev";
                 options.ServiceId = "OrleansBasics";
             })
+            // .Configure<StatelessWorkerOptions>(o =>
+            // {
+            //     o.RemoveIdleWorkers = false; // For true backwards compatibility pre Orleans 9.2
+            // })
             .ConfigureServices(services =>
             {
                 // Explicitly use RandomPlacement (Orleans v8 default) to ensure consistent
